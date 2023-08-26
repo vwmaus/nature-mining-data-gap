@@ -93,8 +93,7 @@ if(!file.exists("./data/global_mining_land_use.gpkg")){
     select(geom = "geometry") |>
     st_cast("POLYGON") |>
     st_make_valid() |>
-    filter(st_is_valid(geom)) |>
-    mutate(area = set_units(st_area(geom), km^2))
+    filter(st_is_valid(geom)) 
 
   # Save mining land use data
   st_write(mining_land_use, "./data/global_mining_land_use.gpkg", delete_layer = TRUE)
@@ -105,7 +104,8 @@ if(!file.exists("./data/global_mining_land_use.gpkg")){
 
 }
 
-mining_land_use <- st_read("./data/global_mining_land_use.gpkg", quiet = TRUE)
+mining_land_use <- st_read("./data/global_mining_land_use.gpkg", quiet = TRUE)|>
+    mutate(area = set_units(st_area(geom), km^2))
 
 # Calculate intersetion between mining land use and mining properties buffers
 if(!file.exists("./data/mining_land_use_diff_10km.gpkg")){
@@ -139,13 +139,15 @@ mining_land_use_diff_10km <- st_read("./data/mining_land_use_diff_10km.gpkg", qu
 
 mining_land_use_diff_10km$area |> sum() / mining_land_use$area |> sum()
 
+(mining_land_use$area |> sum() - mining_land_use_diff_10km$area) |> sum() / mining_land_use$area |> sum()
+
 # Create mining land use grid
 gap_grid <- mining_land_use_diff_10km |>
   dplyr::transmute(dataset = 1, geom = st_centroid(geom)) |>
   st_rasterize(template = grid_template, file = "./data/gap_grid.tif", proxy = FALSE, options = "ALL_TOUCHED=TRUE") |>
   st_as_sf() |>
   filter(dataset == 1)
-
+  
 # Plot gap map with 50km grid
 gp <- ggplot(data = world_map) +
   geom_sf(fill = "#D3D3D3", colour = NA) +
