@@ -137,9 +137,14 @@ if(!file.exists("./data/mining_land_use_diff_10km.gpkg")){
 mining_land_use_diff_10km <- st_read("./data/mining_land_use_diff_10km.gpkg", quiet = TRUE) |>
     mutate(area = set_units(st_area(geom), km^2))
 
+# percentage of area outside the 10km buffer
 mining_land_use_diff_10km$area |> sum() / mining_land_use$area |> sum()
 
-(mining_land_use$area |> sum() - mining_land_use_diff_10km$area) |> sum() / mining_land_use$area |> sum()
+# percentage of area inside the 10km buffer
+(mining_land_use$area |> sum() - mining_land_use_diff_10km$area |> sum()) / mining_land_use$area |> sum()
+
+# total area check
+(mining_land_use$area |> sum() - mining_land_use_diff_10km$area |> sum()) + mining_land_use_diff_10km$area |> sum()
 
 # Create mining land use grid
 gap_grid <- mining_land_use_diff_10km |>
