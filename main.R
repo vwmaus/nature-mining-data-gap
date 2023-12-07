@@ -167,7 +167,19 @@ gp <- ggplot(data = world_map) +
 ggsave(gp, filename = "./data/gap_grid_map.pdf", width = 12.1, height = 6.5, dpi = 300)
 ggsave(gp, filename = "./data/gap_grid_map.png", width = 12.1, height = 6.5, dpi = 300)
 
+# Plot gap map with 50km grid
+gp <- ggplot(data = world_map) +
+  geom_sf(fill = "#D3D3D3", colour = NA) +
+  xlab("Longitude") + ylab("Latitude") +
+  theme_map() +
+  geom_sf(data = st_transform(mining_properties, crs = st_crs("+proj=robin")), size = 0.05) +
+  theme(
+    legend.position = 'none',
+    plot.margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "pt")) + 
+  coord_sf(xlim = xlim_robinson, ylim = ylim_robinson, crs = st_crs("+proj=robin"))
 
+ggsave(gp, filename = "./data/snl_coords_map.pdf", width = 12.1, height = 6.5, dpi = 300)
+ggsave(gp, filename = "./data/snl_coords_map.png", width = 12.1, height = 6.5, dpi = 300)
 
 ### Other spatial relation checks
 
