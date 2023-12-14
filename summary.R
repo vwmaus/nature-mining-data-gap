@@ -129,3 +129,137 @@ ggsave(filename = "./data/country-area-bar-sort-missing.pdf", plot = gp_country_
 
 
 
+
+
+# --------------------------------------------------------------------------------------
+# sorted total
+
+country_area_covered <- country_area_covered |>
+  dplyr::arrange(group, dplyr::desc(area_total))
+
+coutry_factors <- c(as.character(country_area_covered$Country)[country_area_covered$iso3=="ROW"], 
+                    as.character(country_area_covered$Country[country_area_covered$iso3!="ROW"])[order(country_area_covered$area_total[country_area_covered$iso3!="ROW"])])
+
+plot_data <- select(country_area_covered, Country, area_covered, area_missing) |>
+    tidyr::pivot_longer(cols = -Country, names_to = "pattern", values_to = "area") |>
+    mutate(pattern = factor(pattern, c("area_covered", "area_missing")),
+           Country = factor(Country, coutry_factors))
+
+gp_country_area <- plot_data  |>
+  ggplot2::ggplot(aes(x = Country, y = area, fill = pattern)) +
+  ggplot2::geom_bar(stat = "identity", position="stack") +
+  ggplot2::coord_flip() +
+  ggplot2::labs(x = NULL, y = bquote('Mining land use ('*Km^2*')')) +
+  ggplot2::theme(legend.position = c(0.7, .4),
+                 legend.direction = "vertical",
+                 legend.title = element_blank(),
+                 legend.key.size = unit(0.3, "cm"),
+                 rect = element_blank(),
+                 axis.text.y = element_text(margin = margin(t = 0, r = 0, b = 0, l = 0)),
+                 axis.ticks.y = element_blank(),
+                 axis.line.x = element_line(),
+                 panel.grid = element_blank(),
+                 plot.margin = unit(c(0.1, 0.1, 0.0, 0.1), "cm")) +
+   ggplot2::scale_fill_manual(
+        values = c(area_covered = "darkgoldenrod1", area_missing = "brown2"),
+        labels = c("Documented production", "Undocumented production")) +
+  th
+
+ggsave(filename = "./data/country-area-bar-sort-total.pdf", plot = gp_country_area, bg = "#ffffff",
+       width = textwidth/pt_to_mm, height = textheight/pt_to_mm/2.2, units = "mm", scale = 1)
+
+
+# Read mining properties from reporting production at any time between 2000 and 2017
+# This data was extracted from the S&P SNL database as of 2020
+mining_properties <- st_read("./data/snl2020.gpkg", quiet = TRUE) |>
+    st_drop_geometry()  |>
+    as_tibble()
+
+
+#######################
+# Collection of points to share:
+
+
+select(mutate(country_area_covered, perc_cove = area_covered / area_total), -cum_area)
+
+
+# SNL all coordinates country
+mining_properties |> 
+    group_by(country) |>
+    tally() |>
+    arrange(desc(n)) |>
+    mutate(percent = n / sum(n), cum_percent = cumsum(n) / sum(n))
+
+# SNL all coordinates primary commodity
+mining_properties |> 
+    group_by(primary_commodity) |>
+    tally() |>
+    arrange(desc(n)) |>
+    mutate(percent = n / sum(n), cum_percent = cumsum(n) / sum(n))
+
+mining_properties |> 
+    filter(primary_commodity == "Coal") |>
+    group_by(country) |>
+    tally() |>
+    arrange(desc(n)) |>
+    mutate(percent = n / sum(n), cum_percent = cumsum(n) / sum(n))
+
+countr_count <- mining_properties |> 
+    group_by(country) |>
+    tally() |>
+    select(country, n_country = n)
+
+comm_count <- mining_properties |> 
+    group_by(country, primary_commodity) |>
+    tally() |>
+    dplyr::rename(n_comm = n) |>
+    left_join(countr_count)
+
+comm_count |>
+    mutate(percent = n_comm / n_country) |>
+    filter(n_country > 100) |>
+    arrange(desc(percent))
+    
+
+
+mining_properties |> 
+    filter(primary_commodity == "Gold") |>
+    group_by(country) |>
+    tally() |>
+    arrange(desc(n)) |>
+    mutate(percent = n / sum(n), cum_percent = cumsum(n) / sum(n))
+
+mining_properties |> 
+    filter(primary_commodity == "Copper") |>
+    group_by(country) |>
+    tally() |>
+    arrange(desc(n)) |>
+    mutate(percent = n / sum(n), cum_percent = cumsum(n) / sum(n))
+
+mining_properties |> 
+    filter(primary_commodity == "Iron Ore") |>
+    group_by(country) |>
+    tally() |>
+    arrange(desc(n)) |>
+    mutate(percent = n / sum(n), cum_percent = cumsum(n) / sum(n))
+
+mining_properties |> 
+    filter(primary_commodity == "Zinc") |>
+    group_by(country) |>
+    tally() |>
+    arrange(desc(n)) |>
+    mutate(percent = n / sum(n), cum_percent = cumsum(n) / sum(n))
+
+mining_properties |> 
+    filter(primary_commodity == "Diamonds") |>
+    group_by(country) |>
+    tally() |>
+    arrange(desc(n)) |>
+    mutate(percent = n / sum(n), cum_percent = cumsum(n) / sum(n))
+
+mining_properties |> 
+    filter(primary_commodity == "Lithium") |>
+    group_by(country) |>
+    tally() |>
+    arrange(desc(n)) |>
+    mutate(percent = n / sum(n), cum_percent = cumsum(n) / sum(n))
