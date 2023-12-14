@@ -262,9 +262,9 @@ ggsave(gp, filename = "./gap_dist_grid.png", width = 12.1, height = 6.5, dpi = 3
 #  Additional plots and summaries 
 #
 
-if(file.exists("data_gap_country.csv")){
+if(file.exists("data/data_gap_country.csv")){
     
-    area_data <- read_csv("data_gap_country.csv")    
+    area_data <- read_csv("data/data_gap_country.csv")    
 
 } else {
 
@@ -297,9 +297,11 @@ if(file.exists("data_gap_country.csv")){
         dplyr::summarise(area_total = sum(area))
 
     area_data <- left_join(country_area_missing, country_area_covered) |>
-        mutate(area_covered = round(area_total - area_missing, 10), ratio_missing = area_missing / area_total)
+        mutate(area_covered = round(area_total - area_missing, 10)) |>
+        select(admin, adm0_a3, area_covered, area_missing, area_total) |>
+        mutate(ifelse(area_covered < 0), 0, area_covered) # clean numerical imprecision
 
-    readr::write_csv(area_data, "data_gap_country.csv")
+    readr::write_csv(area_data, "data/data_gap_country.csv")
 }
 
 round(sum(area_data$area_total))
@@ -308,7 +310,7 @@ round(sum(area_data$area_missing))
 
 round(sum(area_data$area_total) - sum(area_data$area_missing))
 
-round(sum(area_data$area_missing) / sum(area_data$area_total))
+round(sum(area_data$area_missing) / sum(area_data$area_total)*100)
 
 # --------------------------------------------------------------------------------------
 # define ggplot theme ------------------------------------------------------------------
