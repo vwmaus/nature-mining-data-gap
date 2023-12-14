@@ -1,12 +1,12 @@
 # Mining Data Gap
 
-This repository contains the R script used to produce the mining data gap map for a commentary in Nature.
+This repository contains the R script used to produce the figures for the mining data gap commentary in Nature.
 
 ## Usage
 
-The script requires three datasets. The first one includes polygons representing global mining areas. These polygons were derived from satellite images acquired in 2019 (Maus et al., 2020, 2022). The second dataset also includes information on global mining areas. It was derived from satellite images acquared over multiple years (Tang & Werner, 2023). The `main.R` script will automatically download and merge these datasets to achieve a more comprehensive coverage of global mining areas.
+The script requires three datasets. The first one includes polygons representing global mining areas. These polygons were derived from satellite images acquired in 2019 (Maus et al., 2020, 2022). The second dataset also includes information on global mining areas. It was derived from satellite images acquared over multiple years (Tang & Werner, 2023). The `main.R` script will automatically download and merge the datasets and remove polygons overlaps to achieve a more comprehensive coverage of global mining areas.
 
-The third dataset contains the coordinates of 6,201 mining properties, extracted from the SNL Metals & Mining Dataset by S&P Global Marketplace. This dataset includes all mines that have reported production at any time between 2000 and 2019. The script expects this data in the file `./data/snl2020.gpkg`. If the data file is named differently, you can adjust this at line 30 in the `main.R` script. Please note that this third dataset is not included in the repository, as we do not have the rights to distribute it.
+The third dataset contains the coordinates of 6,201 mining properties, extracted from the SNL Metals & Mining Dataset by S&P Global Marketplace. This dataset includes all mines that have reported production at any time between 2000 and 2019. The script expects this data in the file `./data/snl2020.gpkg`. If the data file is named differently, you can adjust this at line 35 in the `main.R` script. As this dataset is extracted from a proprietary database, it not included in the repository and must be provided by the user of the scripts.
 
 ## Output
 
