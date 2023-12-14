@@ -58,7 +58,7 @@ if(!file.exists("./data/global_mining_land_use.gpkg")){
     download.file("https://download.pangaea.de/dataset/942325/files/global_mining_polygons_v2.gpkg", destfile = "./data/maus2022.gpkg")
   }
   maus2022 <- st_read("./data/maus2022.gpkg", quiet = TRUE) |>
-    select(geom) |>
+    select(country, geom) |>
     st_cast("POLYGON") |>
     dplyr::filter(st_geometry_type(geom) %in% c("POLYGON"), !st_is_empty(geom)) |>
     st_transform(crs)
