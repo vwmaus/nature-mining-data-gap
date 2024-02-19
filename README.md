@@ -1,6 +1,6 @@
 # Mining Data Gap
 
-This repository contains the R script used to produce the figures for the mining data gap commentary in Nature.
+This repository contains the R script used to produce the figures for the commentary "Impacts for half of the world’s mining areas are undocumented" in Nature <https://doi.org/10.1038/d41586-023-04090-3>.
 
 ## Usage
 
@@ -18,6 +18,8 @@ The script also generates a binary gap map. Cells with mining area but missing d
 
 
 ## References
+
+Maus, V. and Werner, T., 2024. Impacts for half of the world’s mining areas are undocumented. Nature 625, pp.26-29.
 
 Maus, V., Giljum, S., da Silva, D.M., Gutschlhofer, J., da Rosa, R.P., Luckeneder, S., Gass, S.L., Lieber, M., and McCallum, I., 2022. An Update on Global Mining Land Use. Scientific Data, 9(1), pp.1-11.
 
